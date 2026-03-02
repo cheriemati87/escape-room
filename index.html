@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<title>Escape Room - Seconda Guerra Mondiale</title>
+
+<style>
+body{
+    font-family: Arial;
+    background:#111;
+    color:white;
+    text-align:center;
+}
+
+.container{
+    max-width:800px;
+    margin:auto;
+    padding:20px;
+}
+
+img{
+    width:100%;
+    max-height:350px;
+    object-fit:cover;
+    border-radius:10px;
+}
+
+button{
+    padding:10px 20px;
+    margin:10px;
+    font-size:16px;
+    cursor:pointer;
+}
+
+input{
+    padding:10px;
+    font-size:16px;
+}
+
+.hidden{
+    display:none;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>🕵️ Escape Room Storica</h1>
+<h2>Seconda Guerra Mondiale</h2>
+
+<div id="game"></div>
+
+</div>
+
+<script>
+
+const domande = [
+
+{
+q:"In quale anno iniziò la Seconda Guerra Mondiale?",
+a:"1939",
+img:"https://upload.wikimedia.org/wikipedia/commons/a/a8/German_troops_in_Poland_1939.jpg"
+},
+
+{
+q:"Quale paese invase la Polonia?",
+a:"germania",
+img:"https://upload.wikimedia.org/wikipedia/commons/1/16/Bundesarchiv_Bild_101I-121-0011-22%2C_Polen%2C_Infanterie_im_Vormarsch.jpg"
+},
+
+{
+q:"Chi era il leader della Germania nazista?",
+a:"hitler",
+img:"https://upload.wikimedia.org/wikipedia/commons/7/7b/Adolf_Hitler_1938.jpg"
+},
+
+{
+q:"Quale attacco portò gli USA in guerra nel 1941?",
+a:"pear harbor",
+img:"https://upload.wikimedia.org/wikipedia/commons/1/1c/USS_Arizona_burning.jpg"
+},
+
+{
+q:"Quale città giapponese fu colpita dalla prima bomba atomica?",
+a:"hiroshima",
+img:"https://upload.wikimedia.org/wikipedia/commons/5/54/Atomic_bomb_mushroom_cloud.jpg"
+},
+
+{
+q:"Quale sbarco avvenne in Normandia nel 1944?",
+a:"d-day",
+img:"https://upload.wikimedia.org/wikipedia/commons/a/a5/Into_the_Jaws_of_Death_23-0455M_edit.jpg"
+},
+
+{
+q:"Quale alleanza comprendeva Germania, Italia e Giappone?",
+a:"asse",
+img:"https://upload.wikimedia.org/wikipedia/commons/0/0c/Tripartite_Pact_signing.jpg"
+},
+
+{
+q:"Chi era il primo ministro britannico durante la guerra?",
+a:"churchill",
+img:"https://upload.wikimedia.org/wikipedia/commons/1/1e/Winston_Churchill_1941.jpg"
+},
+
+{
+q:"In quale anno terminò la guerra in Europa?",
+a:"1945",
+img:"https://upload.wikimedia.org/wikipedia/commons/5/5d/V-E_Day_in_London_1945.jpg"
+},
+
+{
+q:"Quale muro simbolizzò la divisione postbellica della Germania?",
+a:"muro di berlino",
+img:"https://upload.wikimedia.org/wikipedia/commons/f/f0/Berlinermauer.jpg"
+}
+
+];
+
+let indice = 0;
+
+const synth = window.speechSynthesis;
+let utterance;
+
+function parla(testo){
+
+    synth.cancel();
+
+    utterance = new SpeechSynthesisUtterance(testo);
+    utterance.lang="it-IT";
+
+    synth.speak(utterance);
+}
+
+document.body.addEventListener("click",()=>{
+    synth.cancel();
+});
+
+function mostraDomanda(){
+
+if(indice >= domande.length){
+document.getElementById("game").innerHTML=
+"<h1>🎉 ESCAPE COMPLETATA!</h1><p>Hai superato tutte le prove storiche!</p>";
+return;
+}
+
+let d = domande[indice];
+
+document.getElementById("game").innerHTML=`
+
+<h2>Quesito ${indice+1}/10</h2>
+
+<img src="${d.img}">
+
+<p>${d.q}</p>
+
+<input id="risposta" placeholder="Inserisci risposta">
+<br>
+
+<button onclick="controlla()">Conferma</button>
+<button onclick="parlaDomanda()">🔊 Ascolta</button>
+
+<p id="feedback"></p>
+`;
+
+}
+
+function parlaDomanda(){
+parla(domande[indice].q);
+}
+
+function controlla(){
+
+let risposta =
+document.getElementById("risposta").value
+.toLowerCase()
+.trim();
+
+if(risposta === domande[indice].a){
+
+indice++;
+mostraDomanda();
+
+}else{
+
+document.getElementById("feedback")
+.innerHTML="❌ Risposta errata!";
+parla("Risposta errata. Riprova.");
+}
+
+}
+
+mostraDomanda();
+
+</script>
+
+</body>
+</html>
