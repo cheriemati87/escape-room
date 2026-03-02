@@ -2,198 +2,280 @@
 <html lang="it">
 <head>
 <meta charset="UTF-8">
-<title>Escape Room - Seconda Guerra Mondiale</title>
+<title>Escape Room WWII</title>
 
 <style>
+
 body{
-    font-family: Arial;
-    background:#111;
-    color:white;
-    text-align:center;
+margin:0;
+font-family:Arial;
+background:#0b132b;
+color:white;
+text-align:center;
+overflow:hidden;
 }
 
-.container{
-    max-width:800px;
-    margin:auto;
-    padding:20px;
+#schermata{
+padding:20px;
+animation:fade 1s;
+}
+
+@keyframes fade{
+from{opacity:0}
+to{opacity:1}
 }
 
 img{
-    width:100%;
-    max-height:350px;
-    object-fit:cover;
-    border-radius:10px;
+width:70%;
+max-height:300px;
+border-radius:12px;
+margin:10px;
 }
 
 button{
-    padding:10px 20px;
-    margin:10px;
-    font-size:16px;
-    cursor:pointer;
+padding:12px;
+margin:8px;
+font-size:18px;
+cursor:pointer;
+border:none;
+border-radius:8px;
+background:#3a86ff;
+color:white;
 }
 
-input{
-    padding:10px;
-    font-size:16px;
+button:hover{
+background:#265ecf;
 }
 
-.hidden{
-    display:none;
+.box{
+background:#1c2541;
+padding:15px;
+border-radius:12px;
+margin:auto;
+max-width:800px;
 }
+
+.spiegazione{
+background:#3a0ca3;
+padding:10px;
+margin-top:10px;
+border-radius:10px;
+}
+
 </style>
 </head>
 
 <body>
 
-<div class="container">
-
-<h1>🕵️ Escape Room Storica</h1>
-<h2>Seconda Guerra Mondiale</h2>
-
-<div id="game"></div>
-
-</div>
+<div id="schermata"></div>
 
 <script>
 
-const domande = [
+const synth = speechSynthesis;
+
+function parla(testo){
+synth.cancel();
+let u = new SpeechSynthesisUtterance(testo);
+u.lang="it-IT";
+synth.speak(u);
+}
+
+document.body.onclick=()=>synth.cancel();
+
+//////////////// INTRO //////////////////
+
+function intro(){
+
+document.getElementById("schermata").innerHTML=`
+
+<div class="box">
+<h1>🕵️ Escape Room Storica</h1>
+
+<p>
+Sei rimasto bloccato nel passato!<br>
+Per tornare a casa devi superare
+10 prove sulla Seconda Guerra Mondiale.
+</p>
+
+<img src="https://upload.wikimedia.org/wikipedia/commons/a/a8/German_troops_in_Poland_1939.jpg">
+
+<br>
+<button onclick="inizia()">INIZIA MISSIONE</button>
+<button onclick="parlaIntro()">🔊 Ascolta</button>
+
+</div>
+`;
+}
+
+function parlaIntro(){
+parla("Benvenuto. Devi risolvere le prove storiche per tornare nel presente.");
+}
+
+//////////////// DOMANDE //////////////////
+
+let i=0;
+
+const quiz=[
 
 {
-q:"In quale anno iniziò la Seconda Guerra Mondiale?",
-a:"1939",
-img:"https://upload.wikimedia.org/wikipedia/commons/a/a8/German_troops_in_Poland_1939.jpg"
+domanda:"Quando iniziò la Seconda Guerra Mondiale?",
+img:"https://upload.wikimedia.org/wikipedia/commons/a/a8/German_troops_in_Poland_1939.jpg",
+opzioni:["1918","1939","1945"],
+corretta:1,
+aiuto:"Guerra mondiale significa guerra tra molti paesi."
 },
 
 {
-q:"Quale paese invase la Polonia?",
-a:"germania",
-img:"https://upload.wikimedia.org/wikipedia/commons/1/16/Bundesarchiv_Bild_101I-121-0011-22%2C_Polen%2C_Infanterie_im_Vormarsch.jpg"
+domanda:"Chi guidava la Germania nazista?",
+img:"https://upload.wikimedia.org/wikipedia/commons/7/7b/Adolf_Hitler_1938.jpg",
+opzioni:["Hitler","Napoleone","Cesare"],
+corretta:0,
+aiuto:"Nazista = persona che seguiva un'idea politica violenta e razzista."
 },
 
 {
-q:"Chi era il leader della Germania nazista?",
-a:"hitler",
-img:"https://upload.wikimedia.org/wikipedia/commons/7/7b/Adolf_Hitler_1938.jpg"
+domanda:"Quale paese fu attaccato per primo?",
+img:"https://upload.wikimedia.org/wikipedia/commons/1/16/Bundesarchiv_Bild_101I-121-0011-22%2C_Polen%2C_Infanterie_im_Vormarsch.jpg",
+opzioni:["Francia","Polonia","Spagna"],
+corretta:1,
+aiuto:"Invadere significa entrare con l'esercito."
 },
 
 {
-q:"Quale attacco portò gli USA in guerra nel 1941?",
-a:"pear harbor",
-img:"https://upload.wikimedia.org/wikipedia/commons/1/1c/USS_Arizona_burning.jpg"
+domanda:"Quale attacco fece entrare gli USA in guerra?",
+img:"https://upload.wikimedia.org/wikipedia/commons/1/1c/USS_Arizona_burning.jpg",
+opzioni:["Pear Harbor","Roma","Londra"],
+corretta:0,
+aiuto:"Base militare = luogo dove stanno navi e soldati."
 },
 
 {
-q:"Quale città giapponese fu colpita dalla prima bomba atomica?",
-a:"hiroshima",
-img:"https://upload.wikimedia.org/wikipedia/commons/5/54/Atomic_bomb_mushroom_cloud.jpg"
+domanda:"Dove sbarcarono gli Alleati nel 1944?",
+img:"https://upload.wikimedia.org/wikipedia/commons/a/a5/Into_the_Jaws_of_Death_23-0455M_edit.jpg",
+opzioni:["Normandia","Sicilia","Grecia"],
+corretta:0,
+aiuto:"Sbarco = arrivare dal mare con le navi."
 },
 
 {
-q:"Quale sbarco avvenne in Normandia nel 1944?",
-a:"d-day",
-img:"https://upload.wikimedia.org/wikipedia/commons/a/a5/Into_the_Jaws_of_Death_23-0455M_edit.jpg"
+domanda:"Quale città fu colpita dalla bomba atomica?",
+img:"https://upload.wikimedia.org/wikipedia/commons/5/54/Atomic_bomb_mushroom_cloud.jpg",
+opzioni:["Hiroshima","Tokyo","Pechino"],
+corretta:0,
+aiuto:"Bomba atomica = arma molto potente."
 },
 
 {
-q:"Quale alleanza comprendeva Germania, Italia e Giappone?",
-a:"asse",
-img:"https://upload.wikimedia.org/wikipedia/commons/0/0c/Tripartite_Pact_signing.jpg"
+domanda:"Chi era il capo del Regno Unito?",
+img:"https://upload.wikimedia.org/wikipedia/commons/1/1e/Winston_Churchill_1941.jpg",
+opzioni:["Churchill","Lincoln","Kennedy"],
+corretta:0,
+aiuto:"Primo ministro = capo del governo."
 },
 
 {
-q:"Chi era il primo ministro britannico durante la guerra?",
-a:"churchill",
-img:"https://upload.wikimedia.org/wikipedia/commons/1/1e/Winston_Churchill_1941.jpg"
+domanda:"Germania, Italia e Giappone formavano?",
+img:"https://upload.wikimedia.org/wikipedia/commons/0/0c/Tripartite_Pact_signing.jpg",
+opzioni:["Asse","ONU","NATO"],
+corretta:0,
+aiuto:"Alleanza = paesi uniti insieme."
 },
 
 {
-q:"In quale anno terminò la guerra in Europa?",
-a:"1945",
-img:"https://upload.wikimedia.org/wikipedia/commons/5/5d/V-E_Day_in_London_1945.jpg"
+domanda:"Quando finì la guerra in Europa?",
+img:"https://upload.wikimedia.org/wikipedia/commons/5/5d/V-E_Day_in_London_1945.jpg",
+opzioni:["1940","1945","1950"],
+corretta:1,
+aiuto:"Fine guerra = pace."
 },
 
 {
-q:"Quale muro simbolizzò la divisione postbellica della Germania?",
-a:"muro di berlino",
-img:"https://upload.wikimedia.org/wikipedia/commons/f/f0/Berlinermauer.jpg"
+domanda:"Cosa divideva Berlino dopo la guerra?",
+img:"https://upload.wikimedia.org/wikipedia/commons/f/f0/Berlinermauer.jpg",
+opzioni:["Un muro","Un fiume","Una montagna"],
+corretta:0,
+aiuto:"Dividere = separare due parti."
 }
 
 ];
 
-let indice = 0;
+//////////////// MOSTRA //////////////////
 
-const synth = window.speechSynthesis;
-let utterance;
+function mostra(){
 
-function parla(testo){
-
-    synth.cancel();
-
-    utterance = new SpeechSynthesisUtterance(testo);
-    utterance.lang="it-IT";
-
-    synth.speak(utterance);
-}
-
-document.body.addEventListener("click",()=>{
-    synth.cancel();
-});
-
-function mostraDomanda(){
-
-if(indice >= domande.length){
-document.getElementById("game").innerHTML=
-"<h1>🎉 ESCAPE COMPLETATA!</h1><p>Hai superato tutte le prove storiche!</p>";
+if(i>=quiz.length){
+fine();
 return;
 }
 
-let d = domande[indice];
+let q=quiz[i];
 
-document.getElementById("game").innerHTML=`
+document.getElementById("schermata").innerHTML=`
 
-<h2>Quesito ${indice+1}/10</h2>
+<div class="box">
 
-<img src="${d.img}">
+<h2>Stanza ${i+1}/10</h2>
 
-<p>${d.q}</p>
+<img src="${q.img}">
 
-<input id="risposta" placeholder="Inserisci risposta">
-<br>
+<p>${q.domanda}</p>
 
-<button onclick="controlla()">Conferma</button>
+${q.opzioni.map((o,index)=>
+`<button onclick="risposta(${index})">${o}</button>`
+).join("")}
+
+<button onclick="spiega()">💡 Parola difficile</button>
 <button onclick="parlaDomanda()">🔊 Ascolta</button>
 
-<p id="feedback"></p>
-`;
+<div id="aiuto"></div>
 
+</div>
+`;
 }
 
 function parlaDomanda(){
-parla(domande[indice].q);
+parla(quiz[i].domanda);
 }
 
-function controlla(){
+function spiega(){
+document.getElementById("aiuto").innerHTML=
+`<div class="spiegazione">${quiz[i].aiuto}</div>`;
+parla(quiz[i].aiuto);
+}
 
-let risposta =
-document.getElementById("risposta").value
-.toLowerCase()
-.trim();
+function risposta(r){
 
-if(risposta === domande[indice].a){
-
-indice++;
-mostraDomanda();
-
+if(r===quiz[i].corretta){
+parla("Risposta corretta!");
+i++;
+setTimeout(mostra,1200);
 }else{
-
-document.getElementById("feedback")
-.innerHTML="❌ Risposta errata!";
-parla("Risposta errata. Riprova.");
+parla("Riprova.");
+}
 }
 
+function fine(){
+
+document.getElementById("schermata").innerHTML=`
+
+<div class="box">
+<h1>🎉 Missione completata!</h1>
+
+<p>
+Hai imparato la storia e sei tornato nel presente!
+</p>
+
+<button onclick="intro()">Rigioca</button>
+
+</div>
+`;
 }
 
-mostraDomanda();
+function inizia(){
+mostra();
+}
+
+intro();
 
 </script>
 
